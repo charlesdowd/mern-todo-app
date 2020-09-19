@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom'
 function Todo({ todoObject }) {
     return (
         <tr>
-            <td>{todoObject.todo_description}</td>
+            <td className={todoObject.todo_completed ? 'completed' : ''}>{todoObject.todo_description}</td>
             <td>{todoObject.todo_responsible}</td>
             <td>{todoObject.todo_priority}</td>
             <td>
@@ -20,7 +20,7 @@ function Todo({ todoObject }) {
 export default function ToDoList() {
     const [todoList, setTodoList] = React.useState([])
 
-    React.useEffect(() => {
+    function fetchTodos() {
         axios.get('http://localhost:4000/todos/')
             .then(res => {
                 setTodoList(res.data)
@@ -28,7 +28,16 @@ export default function ToDoList() {
             .catch(err => {
                 console.log('cannot get todos from db', err)
             })
-    }, [])
+    }
+
+    React.useEffect(() => {
+        fetchTodos()
+        const interval = window.setInterval(() => {
+            fetchTodos()
+        }, 10000)
+
+        return () => window.clearInterval(interval)
+    }, []) 
 
     function todoListMapper() {
         return todoList.map((todo, i) => {
@@ -37,7 +46,7 @@ export default function ToDoList() {
             )
         })
     }
-
+    console.log(todoList)
     return (
         <div className='container'>
             <h3>Todos List</h3>
