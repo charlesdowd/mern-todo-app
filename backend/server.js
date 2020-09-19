@@ -78,3 +78,16 @@ todoRoutes.route('/update/:id').post(function (req, res) {
         }
     })
 })
+
+// findByIdAndRemove is deprecated so look into other options... still works for now
+todoRoutes.route('/delete/:id').delete(function (req, res) {
+    let id = req.params.id
+    Todo.findByIdAndRemove(id, function(err, todo) {
+        if (err) {
+            res.status(400).send('could not delete todo ', err)
+        }
+        else {
+            res.json(`todo with id ${todo.id} successfully deleted`)
+        }
+    })
+})
