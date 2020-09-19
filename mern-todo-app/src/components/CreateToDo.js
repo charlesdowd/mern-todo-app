@@ -1,4 +1,5 @@
 import * as React from 'react'
+import axios from 'axios'
 
 export default function CreateToDo() {
     const [todo, setTodo] = React.useState({
@@ -31,6 +32,16 @@ export default function CreateToDo() {
         console.log('To Do description: ', todo.todo_description)
         console.log('To Do responsible: ', todo.todo_responsible)
         console.log('To Do priority: ', todo.todo_priority)
+
+        const newTodo = {
+            todo_description: todo.todo_description,
+            todo_responsible: todo.todo_responsible,
+            todo_priority: todo.todo_priority,
+            todo_completed: todo.todo_completed
+        }
+
+        axios.post('http://localhost:4000/todos/add', newTodo)
+            .then(res => console.log(res.data))
 
         setTodo({
             todo_description: '',
