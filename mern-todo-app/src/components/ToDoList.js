@@ -46,7 +46,7 @@ export default function ToDoList() {
             )
         })
     }
-    console.log(todoList)
+    
     return (
         <div className='container'>
             <h3>Todos List</h3>
