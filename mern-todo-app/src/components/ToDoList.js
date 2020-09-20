@@ -1,15 +1,39 @@
 import * as React from 'react'
 import axios from 'axios'
-import { Link } from 'react-router-dom'
+import { Link, useHistory } from 'react-router-dom'
+import Button from 'react-bootstrap/Button'
+
+
 
 function Todo({ todoObject }) {
+    const [ deleted, setDeleted ] = React.useState(false)
+    const history = useHistory()
+
+    const deleteTodo = () => {
+        axios.delete(`http://localhost:4000/todos/delete/${todoObject._id}`)
+        .then((res) => {
+            console.log(res.data)
+            setDeleted(true)
+            history.push('/')
+        })
+        .catch((err) => {
+            console.log('cannot delete todo from db', err)
+        })
+        
+    }
+
+    if (deleted) return null
+    
     return (
         <tr>
             <td className={todoObject.todo_completed ? 'completed' : ''}>{todoObject.todo_description}</td>
             <td>{todoObject.todo_responsible}</td>
             <td>{todoObject.todo_priority}</td>
             <td>
+                <div style={{textAlign: 'center'}}>
                 <Link to={"/edit/" + todoObject._id}>Edit</Link>
+                <Button style={{ marginLeft: '20px' }}variant="outline-danger" onClick={deleteTodo}>Delete</Button>
+                </div>
             </td>
         </tr>
     )
@@ -46,7 +70,7 @@ export default function ToDoList() {
             )
         })
     }
-    
+
     return (
         <div className='container'>
             <h3>Todos List</h3>
@@ -56,7 +80,7 @@ export default function ToDoList() {
                         <th>Description</th>
                         <th>Responsible</th>
                         <th>Priority</th>
-                        <th>Action</th>
+                        <th style={{textAlign: 'center'}}>Action</th>
                     </tr>
                 </thead>
                 <tbody>
